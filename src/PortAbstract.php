@@ -80,6 +80,8 @@ abstract class PortAbstract
 	 */
 	protected $trackingCode;
 
+	protected $factorId;
+
 	/**
 	 * Initialize of class
 	 *
@@ -105,7 +107,7 @@ abstract class PortAbstract
 	/**
 	 * @return mixed
 	 */
-	function getTable()
+	function getTable() 
 	{
 		return $this->db->table($this->config->get('gateway.table'));
 	}
@@ -160,7 +162,7 @@ abstract class PortAbstract
 		return $this->description;
 	}
 
-	/**
+/**
 	 * Set custom Invoice number on current transaction
 	 *
 	 * @param string $description
@@ -236,6 +238,15 @@ abstract class PortAbstract
 		return $this->amount;
 	}
 
+	public function getFactorId()
+	{
+		return $this->factorId;
+	}
+	public function setFactorId($factorId)
+	{
+		$this->factorId = $factorId;
+	}
+
 	/**
 	 * Return result of payment
 	 * If result is done, return true, otherwise throws an related exception
@@ -276,6 +287,7 @@ abstract class PortAbstract
 
 		$this->transactionId = $this->getTable()->insert([
 			'id' 			=> $uid,
+			'factor_id'		=> $this->getFactorId(),
 			'port' 			=> $this->getPortName(),
 			'price' 		=> $this->amount,
 			'status' 		=> Enum::TRANSACTION_INIT,
@@ -391,7 +403,7 @@ abstract class PortAbstract
 		return (!empty($url_array['scheme']) ? $url_array['scheme'] . '://' : null) .
 		(!empty($url_array['host']) ? $url_array['host'] : null) .
 		(!empty($url_array['port']) ? ':' . $url_array['port'] : null) .
-        (!empty($url_array['path']) ? $url_array['path'] : null) .
-        '?' . http_build_query($query_array);
+		(!empty($url_array['path']) ? $url_array['path'] : null) .
+		'?' . http_build_query($query_array);
 	}
 }
